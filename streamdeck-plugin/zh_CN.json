@@ -1,0 +1,12 @@
+{
+  "Name": "GALLEON Screen Player",
+  "Description": "以同一时间轴播放 GALLEON 完整上屏和 12 个按键。",
+  "com.sd100.screen-player.screen": {
+    "Name": "GALLEON 上屏动画",
+    "Tooltip": "旧版四区域播放。请重新导出 Profile 以使用全屏同步播放。"
+  },
+  "com.sd100.screen-player.synced-key": {
+    "Name": "GALLEON 同步背景",
+    "Tooltip": "导入 SD100 v2 Profile。1 号键保存整张动画；所有按键和完整上屏共用同一时间轴。"
+  }
+}

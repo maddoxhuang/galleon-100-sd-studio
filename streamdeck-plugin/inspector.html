@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>GALLEON Screen Player</title>
+<style>body{background:#2d2d2d;color:#ddd;font:13px/1.6 system-ui;padding:12px}h3{color:white}p{margin:10px 0}button{padding:8px 14px;cursor:pointer}#status{color:#ffce8c}</style>
+<h3 data-text="heading"></h3>
+<p data-text="timeline"></p>
+<p data-text="pages"></p>
+<p data-text="master"></p>
+<button id="resync" data-text="resync" disabled></button>
+<p id="status" role="status"></p>
+<p data-text="upgrade"></p>
+<p data-text="navigation"></p>
+<script>
+// English until Stream Deck reports its language; every Chinese variant uses Simplified Chinese.
+const TEXT = {
+    en: {
+        heading: 'GALLEON Synchronized Background',
+        timeline: 'In the new profile, the full screen and all 12 keys play on one timeline. The screen is no longer split into four regions.',
+        pages: 'The animation page keeps the full screen and 12 animated keys. Turn the left dial counterclockwise for the previous page or clockwise for the next page; press it to return to the animation page. Add any keys you like on the second page, Functions.',
+        master: 'Keep the main action on key 1 (top left of the animation page). It stores the whole animation.',
+        resync: 'Restart synced playback',
+        upgrade: 'After upgrading, regenerate the profile in SD100 Studio and import it again. Older four-region profiles keep playing the old way.',
+        navigation: 'You can close SD100 Studio during playback. Keep the preset Action Trigger navigation on the left dial and leave the rest of the screen empty. When you add a page, copy the left-dial navigation so you can return to the animation page.',
+        requested: 'Requested all surfaces to restart from the beginning.',
+        errors: {
+            'display-not-found': 'GALLEON display not found. Check the USB connection.',
+            'multiple-devices': 'More than one GALLEON is connected. Connect only the target device and try again.',
+            'transfer-incomplete': 'Image transfer to the GALLEON was incomplete. Reconnect the device.',
+            'invalid-animation': 'This profile\'s animation can\'t be played. Regenerate the profile in SD100 Studio and import it again.',
+        },
+    },
+    zh: {
+        heading: 'GALLEON 同步背景',
+        timeline: '新版 Profile 的完整上屏和 12 键由同一时间轴播放，上屏不再分四块。',
+        pages: '动画页保留完整上屏和 12 个动画键。左滚轮逆时针上一页、顺时针下一页、按下返回动画页。第二页「功能页」可自由添加功能键。',
+        master: '请保留动画页左上角 1 号键的主控动作，它保存整张动画。',
+        resync: '从头重新同步播放',
+        upgrade: '升级后需要在 SD100 Studio 中重新生成并导入 Profile。旧版四区域 Profile 仍按旧方式播放。',
+        navigation: '播放时可关闭 SD100 Studio。保留预置左滚轮的 Action Trigger 导航，其余上屏区域保持空白。添加新页面时，请复制左滚轮导航，方便返回动画页。',
+        requested: '已请求全部区域从头播放。',
+        errors: {
+            'display-not-found': '未找到 GALLEON 显示接口，请检查 USB 连接。',
+            'multiple-devices': '检测到多台 GALLEON，请只连接目标设备后重试。',
+            'transfer-incomplete': 'GALLEON 图像传输不完整，请重新连接设备。',
+            'invalid-animation': '无法播放此 Profile 中的动画，请在 SD100 Studio 中重新生成并导入 Profile。',
+        },
+    },
+};
+let socket, actionContext, action, text = TEXT.en, status = null;
+function showStatus(next) {
+    status = next;
+    let message = '';
+    if (status?.key) message = text[status.key];
+    // Errors without a known code are shown as the plugin sent them.
+    else if (status) message = Object.hasOwn(text.errors, status.code) ? text.errors[status.code] : status.message;
+    document.getElementById('status').textContent = message;
+}
+function localize(language) {
+    const chinese = /^zh/i.test(language || '');
+    text = chinese ? TEXT.zh : TEXT.en;
+    document.documentElement.lang = chinese ? 'zh-CN' : 'en';
+    for (const element of document.querySelectorAll('[data-text]')) element.textContent = text[element.dataset.text];
+    showStatus(status);
+}
+localize('en');
+function connectElgatoStreamDeckSocket(port, uuid, registerEvent, info, actionInfo) {
+    try { localize(JSON.parse(info).application.language); } catch { /* Keep English. */ }
+    const data = JSON.parse(actionInfo);
+    actionContext = data.context;
+    action = data.action;
+    socket = new WebSocket('ws://127.0.0.1:' + port);
+    socket.onopen = () => {
+        socket.send(JSON.stringify({ event: registerEvent, uuid }));
+        document.getElementById('resync').disabled = action !== 'com.sd100.screen-player.synced-key';
+    };
+    socket.onmessage = event => {
+        const message = JSON.parse(event.data);
+        if (message.event === 'sendToPropertyInspector' && message.payload.error) showStatus({ code: message.payload.code, message: message.payload.error });
+    };
+}
+document.getElementById('resync').onclick = () => {
+    socket.send(JSON.stringify({ event: 'sendToPlugin', action, context: actionContext, payload: { command: 'resync' } }));
+    showStatus({ key: 'requested' });
+};
+</script>
+</html>

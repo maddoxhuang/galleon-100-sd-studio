@@ -1,0 +1,9 @@
+{
+  "pluginUUID": "com.sd100.screen-player",
+  "actionUUID": "com.sd100.screen-player.screen",
+  "keyActionUUID": "com.sd100.screen-player.synced-key",
+  "version": "2.0.2.0",
+  "filename": "GALLEON_Screen_Player_v2_0_2.zip",
+  "download": "/plugins/GALLEON_Screen_Player_v2_0_2.zip",
+  "data": "/plugins/GALLEON_Screen_Player_v2_0_2.json"
+}

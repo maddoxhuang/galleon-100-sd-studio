@@ -1,0 +1,52 @@
+{
+  "name": "sd100-studio",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "test": "node --test tests/*.test.cjs",
+    "pretest": "npm run plugin:build",
+    "sample:galleon": "node scripts/generate-galleon-sample.cjs",
+    "icon:generate": "node scripts/generate-icon.cjs",
+    "plugin:build": "node scripts/build-screen-plugin.cjs",
+    "desktop:build": "npm run plugin:build && node scripts/build-desktop.cjs",
+    "desktop:start": "electron build/desktop/main.cjs",
+    "desktop:pack": "npm run desktop:build && electron-builder --config electron-builder.yml --dir",
+    "desktop:dist": "npm run desktop:build && electron-builder --config electron-builder.yml --win portable --x64 && node scripts/collect-release.cjs",
+    "test:desktop": "node tests/desktop.e2e.cjs",
+    "test:desktop:packaged": "node tests/desktop.e2e.cjs --packaged",
+    "lint": "eslint",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "gif-encoder-2": "^1.0.5",
+    "gifuct-js": "^2.1.2",
+    "jszip": "^3.10.1",
+    "react": "19.2.3",
+    "react-dom": "19.2.3"
+  },
+  "devDependencies": {
+    "@elgato/cli": "^1.9.0",
+    "@eslint/js": "^9.39.5",
+    "@napi-rs/canvas": "^0.1.100",
+    "@types/node": "^20",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "buffer": "6.0.3",
+    "electron": "44.7.0",
+    "electron-builder": "26.15.3",
+    "esbuild": "^0.28.2",
+    "eslint": "^9",
+    "eslint-plugin-react-hooks": "^7.1.1",
+    "events": "3.3.0",
+    "globals": "^16.5.0",
+    "node-hid": "^3.4.0",
+    "playwright": "1.64.0",
+    "pngjs": "^7.0.0",
+    "process": "0.11.10",
+    "sharp": "^0.35.4",
+    "stream-browserify": "3.0.0",
+    "typescript": "^5",
+    "typescript-eslint": "^8.71.1",
+    "ws": "^8.22.0"
+  }
+}

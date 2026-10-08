@@ -1,0 +1,27 @@
+appId: dev.sd100.studio
+productName: SD100 Studio
+directories:
+  app: build/desktop
+  output: build/release
+files:
+  - main.cjs
+  - protocol.cjs
+  - settings.cjs
+  - icon.ico
+  - package.json
+  - LICENSE
+  - THIRD-PARTY-LICENSES.txt
+  - web/**/*
+  - '!node_modules/**/*'
+asar: true
+beforeBuild: scripts/desktop-before-build.cjs
+win:
+  target:
+    - target: portable
+      arch: [x64]
+  icon: desktop/icon.ico
+  executableName: galleon-100-sd-studio
+  signExecutable: false
+portable:
+  artifactName: galleon-100-sd-studio-${version}-windows-x64.exe
+  requestExecutionLevel: user

@@ -1,0 +1,41 @@
+{
+  "$schema": "https://schemas.elgato.com/streamdeck/plugins/manifest.json",
+  "UUID": "com.sd100.screen-player",
+  "Name": "GALLEON Screen Player",
+  "Category": "GALLEON Screen Player",
+  "CategoryIcon": "images/action",
+  "Version": "2.0.2.0",
+  "Author": "SD100 local tools",
+  "Description": "Plays a complete GALLEON Info Display and 12 keys on one timeline.",
+  "Icon": "images/plugin",
+  "CodePath": "bin/plugin.js",
+  "SDKVersion": 2,
+  "Software": { "MinimumVersion": "7.1" },
+  "Nodejs": { "Version": "24" },
+  "OS": [{ "Platform": "windows", "MinimumVersion": "10" }],
+  "Actions": [{
+    "UUID": "com.sd100.screen-player.screen",
+    "VisibleInActionsList": false,
+    "Name": "GALLEON Screen Animation",
+    "Icon": "images/action",
+    "Controllers": ["Encoder"],
+    "Encoder": { "layout": "screen-layout.json" },
+    "States": [{ "Image": "images/key", "ShowTitle": false }],
+    "SupportedInMultiActions": false,
+    "UserTitleEnabled": false,
+    "DisableCaching": true,
+    "PropertyInspectorPath": "inspector.html",
+    "Tooltip": "Legacy four-region playback. Re-export the profile for synchronized fullscreen playback."
+  }, {
+    "UUID": "com.sd100.screen-player.synced-key",
+    "Name": "GALLEON Synchronized Background",
+    "Icon": "images/action",
+    "Controllers": ["Keypad"],
+    "States": [{ "Image": "images/key", "ShowTitle": false }],
+    "SupportedInMultiActions": false,
+    "UserTitleEnabled": false,
+    "DisableCaching": true,
+    "PropertyInspectorPath": "inspector.html",
+    "Tooltip": "Import an SD100 v2 profile. Key 1 holds the animation; all keys and the full screen share one timeline."
+  }]
+}
